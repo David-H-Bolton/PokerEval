@@ -1,0 +1,12 @@
+6S2H7DTH5C -- High card
+THTC2SAC3H -- One pair tens
+7S9C6H6C9S -- two pairs
+9DKDKHKS8S -- trips
+2D4C3H6S5H -- Straight
+4S3HAC2D5S -- Straight (Ace low)
+KCQHJDAHTS -- Straight (Ace High)
+2D9D3D6D5D -- flush
+7S9H9S7C9C -- Full house
+9DKDKHKSKC -- Four
+2D4D3D6D5D -- Straight flush
+JCQCKCACTC -- Royal Flush
