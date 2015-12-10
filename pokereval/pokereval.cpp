@@ -12,12 +12,12 @@
 enum class Suit { Diamonds, Hearts, Clubs, Spades };
 enum class Rank { Ace, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King};
 enum class Value { HighCard, Pair, TwoPair, Three, Straight, Flush, FullHouse, Four, StraightFlush, RoyalFlush  };
-static std::string ValueStr[] = { "HighCard", "Pair", "Two Pair", "Three", "Straight", "Flush", "Full House", "Four", "Straight Flush","Royal Flush" };
-static std::string SuitStr[]={"D","H","C","S"};
-static std::string RankStr[]={"A", "2", "3", "4", "5","6","7", "8", "9", "T", "J", "Q", "K" };
-const std::string PokerSuitStrings = "DHCS";
-const std::string PokerSuitRanks = "A23456789TJQK";
-const int MaxThreads = 12;
+static const std::string ValueStr[] = { "HighCard", "Pair", "Two Pair", "Three", "Straight", "Flush", "Full House", "Four", "Straight Flush","Royal Flush" };
+static const std::string SuitStr[]={"D","H","C","S"};
+static const std::string RankStr[]={"A", "2", "3", "4", "5","6","7", "8", "9", "T", "J", "Q", "K" };
+static const std::string PokerSuitStrings = "DHCS";
+static const std::string PokerSuitRanks = "A23456789TJQK";
+static const int MaxThreads = 12;
 
 class PokerCard {
 
