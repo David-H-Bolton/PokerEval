@@ -305,7 +305,8 @@ int main()
 		rowCount++;
 	}
 
-	#endif	fileout.close();
+#endif
+	fileout.close();
 	filein.close();
 	sw.stopTimer();
 	std::cout << "Time to evaluate " << rowCount << " poker hands: " << sw.getElapsedTime() << std::endl;
