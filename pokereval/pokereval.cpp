@@ -58,7 +58,7 @@ class PokerHand {
 public:
 	PokerHand() {};
 	PokerHand(const std::string &handtext);
-	std::string GetResult(Value & handvalue);
+	std::string GetResult(Value handvalue);
 	void WriteResult(std::ofstream& stream, Value handvalue);
 	friend Value EvaluateHand(PokerHand& Ph);
 	std::string ToString();
@@ -252,11 +252,11 @@ Value EvaluateHand(PokerHand& Ph) {
 	return Value::HighCard;
 }
 
-void PokerHand::WriteResult(std::ofstream& stream,Value handvalue) {
+void PokerHand::WriteResult(std::ofstream& stream, Value handvalue) {
 	stream << GetResult( handvalue ) << std::endl;
 }
 
-std::string PokerHand::GetResult( Value & handvalue) {
+std::string PokerHand::GetResult(Value handvalue) {
 	return ToString() + " " + ValueStr[(int)handvalue];
 }
 
