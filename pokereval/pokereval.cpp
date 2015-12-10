@@ -7,7 +7,7 @@
 #include <random>
 #include <string>
 #include <vector>
-#include <Synchapi.h>
+#include <synchapi.h>
 
 enum class Suit { Diamonds, Hearts, Clubs, Spades };
 enum class Rank { Ace, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King};
@@ -79,7 +79,7 @@ PokerHand::PokerHand(std::string handtext) {
 
 
 void PokerHand::SortByRank() {
-	sort(hand.begin(), hand.end(), SortByRankComparison);
+	std::sort(hand.begin(), hand.end(), SortByRankComparison);
 }
 
 // output hand as sorted text
