@@ -38,7 +38,7 @@ public:
 	Rank rank;
 	bool selected; // used for checking for full houses and two pairs
 
-	PokerCard(std::string cardtext) { // RankSuit e.g. 6C = Six Clubs
+	PokerCard(const std::string &cardtext) { // RankSuit e.g. 6C = Six Clubs
 		rank = getRankFromChar(cardtext[0]);
 		suit = getSuitFromChar(cardtext[1]);
 	}
@@ -57,7 +57,7 @@ class PokerHand {
 	static bool SortByRankComparison(const PokerCard &lhs, const PokerCard &rhs) { return lhs.rank < rhs.rank; }
 public:
 	PokerHand() {};
-	PokerHand(std::string handtext);
+	PokerHand(const std::string &handtext);
 	std::string GetResult(Value & handvalue);
 	void WriteResult(std::ofstream& stream, Value handvalue);
 	friend Value EvaluateHand(PokerHand& Ph);
@@ -65,7 +65,7 @@ public:
 
 };
 
-PokerHand::PokerHand(std::string handtext) {
+PokerHand::PokerHand(const std::string &handtext) {
 	auto offset = 0;
 	auto handoffset = 0;
 	for (auto cardIndex = 0; cardIndex < 5; cardIndex++) {
@@ -261,7 +261,7 @@ std::string PokerHand::GetResult( Value & handvalue) {
 }
 
 // Only called if uncommented
-std::string ProcessThread(std::string str) {
+std::string ProcessThread(const std::string &str) {
 			PokerHand pokerhand(str);			
 			auto result = EvaluateHand(pokerhand);
 			return pokerhand.GetResult(result);
