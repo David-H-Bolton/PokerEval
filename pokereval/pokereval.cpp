@@ -256,7 +256,10 @@ void PokerHand::WriteResult(std::ofstream& stream, Value handvalue) {
 }
 
 std::string PokerHand::GetResult(Value handvalue) {
-	return ToString() + " " + ValueStr[(int)handvalue];
+	std::string ret = ToString();
+	ret += " ";
+	ret += ValueStr[(int)handvalue];
+	return ret;
 }
 
 // Only called if uncommented
