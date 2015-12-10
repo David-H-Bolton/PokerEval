@@ -252,7 +252,7 @@ Value EvaluateHand(PokerHand& Ph) {
 }
 
 void PokerHand::WriteResult(std::ofstream& stream, Value handvalue) {
-	stream << GetResult( handvalue ) << std::endl;
+	stream << GetResult( handvalue ) << '\n';
 }
 
 std::string PokerHand::GetResult(Value handvalue) {
@@ -290,7 +290,7 @@ int main()
 		});
 		if (count == MaxThreads-1) {
 			for (auto & e : futures) {
-				fileout << e.get() << std::endl;
+				fileout << e.get() << '\n';
 			}
 			count = 0;
 		}
@@ -308,6 +308,6 @@ int main()
 	fileout.close();
 	filein.close();
 	sw.stopTimer();
-	std::cout << "Time to evaluate " << rowCount << " poker hands: " << sw.getElapsedTime() << std::endl;
+	std::cout << "Time to evaluate " << rowCount << " poker hands: " << sw.getElapsedTime() << '\n';
 	return 0;
 }
