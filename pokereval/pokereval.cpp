@@ -54,7 +54,6 @@ public:
 class PokerHand {
 	std::array<PokerCard, 5> hand; // needs PokerCard default Constructor
 	void SortByRank();
-	static bool SortByRankComparison(const PokerCard &lhs, const PokerCard &rhs) { return lhs.rank < rhs.rank; }
 public:
 	PokerHand() {};
 	PokerHand(const std::string &handtext);
@@ -79,7 +78,7 @@ PokerHand::PokerHand(const std::string &handtext) {
 
 
 void PokerHand::SortByRank() {
-	std::sort(hand.begin(), hand.end(), SortByRankComparison);
+	std::sort(hand.begin(), hand.end(), [](const PokerCard &lhs, const PokerCard &rhs){ return lhs.rank < rhs.rank; });
 }
 
 // output hand as sorted text
