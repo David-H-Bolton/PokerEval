@@ -268,6 +268,7 @@ std::string ProcessThread(const std::string &str) {
 //#define Multi 1
 int main()
 {
+	std::ios_base::sync_with_stdio(false);
 	CStopWatch sw;
 	sw.startTimer();
 	std::ofstream fileout("results.txt");
