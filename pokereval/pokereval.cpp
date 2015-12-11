@@ -7,17 +7,17 @@
 #include <random>
 #include <string>
 #include <vector>
-#include <Synchapi.h>
+#include <synchapi.h>
 
 enum class Suit { Diamonds, Hearts, Clubs, Spades };
 enum class Rank { Ace, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King};
 enum class Value { HighCard, Pair, TwoPair, Three, Straight, Flush, FullHouse, Four, StraightFlush, RoyalFlush  };
-static std::string ValueStr[] = { "HighCard", "Pair", "Two Pair", "Three", "Straight", "Flush", "Full House", "Four", "Straight Flush","Royal Flush" };
-static std::string SuitStr[]={"D","H","C","S"};
-static std::string RankStr[]={"A", "2", "3", "4", "5","6","7", "8", "9", "T", "J", "Q", "K" };
-const std::string PokerSuitStrings = "DHCS";
-const std::string PokerSuitRanks = "A23456789TJQK";
-const int MaxThreads = 12;
+static const std::string ValueStr[] = { "HighCard", "Pair", "Two Pair", "Three", "Straight", "Flush", "Full House", "Four", "Straight Flush","Royal Flush" };
+static const std::string SuitStr[]={"D","H","C","S"};
+static const std::string RankStr[]={"A", "2", "3", "4", "5","6","7", "8", "9", "T", "J", "Q", "K" };
+static const std::string PokerSuitStrings = "DHCS";
+static const std::string PokerSuitRanks = "A23456789TJQK";
+static const int MaxThreads = 12;
 
 class PokerCard {
 
@@ -38,7 +38,7 @@ public:
 	Rank rank;
 	bool selected; // used for checking for full houses and two pairs
 
-	PokerCard(std::string cardtext) { // RankSuit e.g. 6C = Six Clubs
+	PokerCard(const std::string &cardtext) { // RankSuit e.g. 6C = Six Clubs
 		rank = getRankFromChar(cardtext[0]);
 		suit = getSuitFromChar(cardtext[1]);
 	}
@@ -54,18 +54,17 @@ public:
 class PokerHand {
 	std::array<PokerCard, 5> hand; // needs PokerCard default Constructor
 	void SortByRank();
-	static bool SortByRankComparison(const PokerCard &lhs, const PokerCard &rhs) { return lhs.rank < rhs.rank; }
 public:
 	PokerHand() {};
-	PokerHand(std::string handtext);
-	std::string GetResult(Value & handvalue);
+	PokerHand(const std::string &handtext);
+	std::string GetResult(Value handvalue);
 	void WriteResult(std::ofstream& stream, Value handvalue);
 	friend Value EvaluateHand(PokerHand& Ph);
 	std::string ToString();
 
 };
 
-PokerHand::PokerHand(std::string handtext) {
+PokerHand::PokerHand(const std::string &handtext) {
 	auto offset = 0;
 	auto handoffset = 0;
 	for (auto cardIndex = 0; cardIndex < 5; cardIndex++) {
@@ -79,7 +78,7 @@ PokerHand::PokerHand(std::string handtext) {
 
 
 void PokerHand::SortByRank() {
-	sort(hand.begin(), hand.end(), SortByRankComparison);
+	std::sort(hand.begin(), hand.end(), [](const PokerCard &lhs, const PokerCard &rhs){ return lhs.rank < rhs.rank; });
 }
 
 // output hand as sorted text
@@ -252,16 +251,19 @@ Value EvaluateHand(PokerHand& Ph) {
 	return Value::HighCard;
 }
 
-void PokerHand::WriteResult(std::ofstream& stream,Value handvalue) {
-	stream << GetResult( handvalue ) << std::endl;
+void PokerHand::WriteResult(std::ofstream& stream, Value handvalue) {
+	stream << GetResult( handvalue ) << '\n';
 }
 
-std::string PokerHand::GetResult( Value & handvalue) {
-	return ToString() + " " + ValueStr[(int)handvalue];
+std::string PokerHand::GetResult(Value handvalue) {
+	std::string ret = ToString();
+	ret += " ";
+	ret += ValueStr[(int)handvalue];
+	return ret;
 }
 
 // Only called if uncommented
-std::string ProcessThread(std::string str) {
+std::string ProcessThread(const std::string &str) {
 			PokerHand pokerhand(str);			
 			auto result = EvaluateHand(pokerhand);
 			return pokerhand.GetResult(result);
@@ -269,6 +271,7 @@ std::string ProcessThread(std::string str) {
 //#define Multi 1
 int main()
 {
+	std::ios_base::sync_with_stdio(false);
 	CStopWatch sw;
 	sw.startTimer();
 	std::ofstream fileout("results.txt");
@@ -291,7 +294,7 @@ int main()
 		});
 		if (count == MaxThreads-1) {
 			for (auto & e : futures) {
-				fileout << e.get() << std::endl;
+				fileout << e.get() << '\n';
 			}
 			count = 0;
 		}
@@ -305,9 +308,10 @@ int main()
 		rowCount++;
 	}
 
-	#endif	fileout.close();
+#endif
+	fileout.close();
 	filein.close();
 	sw.stopTimer();
-	std::cout << "Time to evaluate " << rowCount << " poker hands: " << sw.getElapsedTime() << std::endl;
+	std::cout << "Time to evaluate " << rowCount << " poker hands: " << sw.getElapsedTime() << '\n';
 	return 0;
 }
