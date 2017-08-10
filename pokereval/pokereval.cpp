@@ -296,6 +296,11 @@ int main()
 			count = 0;
 		}
 	}
+	if (count != MaxThreads - 1) {
+		for (int i = 0; i < count; ++i) {
+			fileout << futures[i].get() << std::endl;
+		}
+	}
 #else
 	while (std::getline(filein, str))
 	{
