@@ -280,8 +280,7 @@ int main()
 	std::array<std::future<std::string>,MaxThreads-1> futures;
 	auto count = 0;
 	while (count <MaxThreads-1) {
-		if (filein.eof()) break;
-		std::getline(filein, str);
+		if (!std::getline(filein, str)) break;
 		rowCount++;
 		//futures[count++] = std::async(ProcessThread, str);
 		futures[count++] = std::async([str]{
@@ -294,6 +293,11 @@ int main()
 				fileout << e.get() << std::endl;
 			}
 			count = 0;
+		}
+	}
+	if (count != MaxThreads - 1) {
+		for (int i = 0; i < count; ++i) {
+			fileout << futures[i].get() << std::endl;
 		}
 	}
 #else
