@@ -102,7 +102,7 @@ Value EvaluateHand(PokerHand& Ph) {
 	auto isFullHouse = false;
 	auto sameRank = 0; // count number of cards of same rank
 
-	Sleep(1);
+	//Sleep(1);
 	for (auto& card : Ph.hand) {
 		card.selected = false;
 	}
@@ -253,7 +253,7 @@ Value EvaluateHand(PokerHand& Ph) {
 }
 
 void PokerHand::WriteResult(std::ofstream& stream,Value handvalue) {
-	stream << GetResult( handvalue ) << std::endl;
+	stream << GetResult( handvalue ) << '\n';
 }
 
 std::string PokerHand::GetResult( Value & handvalue) {
@@ -266,22 +266,24 @@ std::string ProcessThread(std::string str) {
 			auto result = EvaluateHand(pokerhand);
 			return pokerhand.GetResult(result);
 }
-//#define Multi 1
+#define Multi 1
+#define OpenMP 1
 int main()
 {
 	CStopWatch sw;
 	sw.startTimer();
 	std::ofstream fileout("results.txt");
-	std::ifstream filein("hands.txt");
+	//std::ifstream filein("hands.txt");
+	std::ifstream filein("hands1million.txt");
 	std::string str;
 	auto rowCount = 0;
 
 #if Multi
+#ifndef OpenMP//without OpenMP
 	std::array<std::future<std::string>,MaxThreads-1> futures;
 	auto count = 0;
 	while (count <MaxThreads-1) {
-		if (filein.eof()) break;
-		std::getline(filein, str);
+		if (!std::getline(filein, str)) break;
 		rowCount++;
 		//futures[count++] = std::async(ProcessThread, str);
 		futures[count++] = std::async([str]{
@@ -291,11 +293,33 @@ int main()
 		});
 		if (count == MaxThreads-1) {
 			for (auto & e : futures) {
-				fileout << e.get() << std::endl;
+				fileout << e.get() << '\n';
 			}
 			count = 0;
 		}
 	}
+	if (count != MaxThreads - 1) {
+		for (int i = 0; i < count; ++i) {
+			fileout << futures[i].get() << '\n';
+		}
+	}
+#else//with OpenMP
+	std::vector<std::string> hands;
+	while (std::getline(filein, str)) {
+		hands.push_back(str);
+	}
+	rowCount = hands.size();
+	std::vector<std::string> results(rowCount);
+#pragma omp parallel for
+	for (int i = 0; i < rowCount; ++i) {
+		PokerHand pokerhand(hands[i]);
+		auto result = EvaluateHand(pokerhand);
+		results[i] = pokerhand.GetResult(result);
+	}
+	for (int i = 0; i < rowCount; ++i) {
+		fileout << results[i] << '\n';
+	}
+#endif
 #else
 	while (std::getline(filein, str))
 	{
