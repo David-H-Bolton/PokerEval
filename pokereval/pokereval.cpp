@@ -102,7 +102,7 @@ Value EvaluateHand(PokerHand& Ph) {
 	auto isFullHouse = false;
 	auto sameRank = 0; // count number of cards of same rank
 
-	Sleep(1);
+	//Sleep(1);
 	for (auto& card : Ph.hand) {
 		card.selected = false;
 	}
@@ -253,7 +253,7 @@ Value EvaluateHand(PokerHand& Ph) {
 }
 
 void PokerHand::WriteResult(std::ofstream& stream,Value handvalue) {
-	stream << GetResult( handvalue ) << std::endl;
+	stream << GetResult( handvalue ) << '\n';
 }
 
 std::string PokerHand::GetResult( Value & handvalue) {
@@ -272,7 +272,8 @@ int main()
 	CStopWatch sw;
 	sw.startTimer();
 	std::ofstream fileout("results.txt");
-	std::ifstream filein("hands.txt");
+	//std::ifstream filein("hands.txt");
+	std::ifstream filein("hands1million.txt");
 	std::string str;
 	auto rowCount = 0;
 
@@ -290,14 +291,14 @@ int main()
 		});
 		if (count == MaxThreads-1) {
 			for (auto & e : futures) {
-				fileout << e.get() << std::endl;
+				fileout << e.get() << '\n';
 			}
 			count = 0;
 		}
 	}
 	if (count != MaxThreads - 1) {
 		for (int i = 0; i < count; ++i) {
-			fileout << futures[i].get() << std::endl;
+			fileout << futures[i].get() << '\n';
 		}
 	}
 #else
