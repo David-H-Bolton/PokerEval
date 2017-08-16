@@ -266,7 +266,8 @@ std::string ProcessThread(std::string str) {
 			auto result = EvaluateHand(pokerhand);
 			return pokerhand.GetResult(result);
 }
-//#define Multi 1
+#define Multi 1
+#define OpenMP 1
 int main()
 {
 	CStopWatch sw;
@@ -278,6 +279,7 @@ int main()
 	auto rowCount = 0;
 
 #if Multi
+#ifndef OpenMP//without OpenMP
 	std::array<std::future<std::string>,MaxThreads-1> futures;
 	auto count = 0;
 	while (count <MaxThreads-1) {
@@ -301,6 +303,23 @@ int main()
 			fileout << futures[i].get() << '\n';
 		}
 	}
+#else//with OpenMP
+	std::vector<std::string> hands;
+	while (std::getline(filein, str)) {
+		hands.push_back(str);
+	}
+	rowCount = hands.size();
+	std::vector<std::string> results(rowCount);
+#pragma omp parallel for
+	for (int i = 0; i < rowCount; ++i) {
+		PokerHand pokerhand(hands[i]);
+		auto result = EvaluateHand(pokerhand);
+		results[i] = pokerhand.GetResult(result);
+	}
+	for (int i = 0; i < rowCount; ++i) {
+		fileout << results[i] << '\n';
+	}
+#endif
 #else
 	while (std::getline(filein, str))
 	{
